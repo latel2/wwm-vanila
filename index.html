@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,7 +29,6 @@
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            /* Updated to HTTPS to prevent mixed content errors */
             background-image: 
                 linear-gradient(rgba(2, 13, 8, 0.92), rgba(2, 13, 8, 0.96)),
                 url('https://www.transparenttextures.com/patterns/black-scales.png');
@@ -111,6 +111,8 @@
             padding: 30px 20px;
             padding-bottom: 120px;
             min-height: 60vh;
+            opacity: 0; /* Starts hidden for fade effect */
+            transition: opacity 0.3s ease-in;
         }
 
         .section-title {
@@ -425,9 +427,9 @@
         </button>
     </div>
 
-    <script type="module">
-        import { GoogleGenAI } from "https://esm.run/@google/genai";
-
+    <!-- SCRIPT PRINCIPAL DE RENDERIZAÇÃO (NÃO MÓDULO) -->
+    <script>
+        // Dados do Guia (Seguros para rodar em qualquer navegador)
         const GUIDE_DATA = {
             intro: {
                 title: "Início",
@@ -856,6 +858,7 @@
         let currentTab = 'intro';
 
         function init() {
+            nav.innerHTML = '';
             Object.keys(GUIDE_DATA).forEach(key => {
                 const btn = document.createElement('button');
                 btn.className = 'nav-btn';
@@ -865,6 +868,7 @@
                 nav.appendChild(btn);
             });
             loadTab(currentTab);
+            content.style.opacity = 1;
         }
 
         function loadTab(key) {
@@ -878,48 +882,49 @@
                 content.innerHTML = data.render ? data.render() : data.content;
                 content.style.opacity = 1;
                 window.scrollTo(0, 0);
-            }, 200);
+            }, 150);
         }
-        
-        content.style.transition = 'opacity 0.2s ease-in-out';
 
-        // --- AI LOGIC (GEMINI) ---
-        
+        // Executar renderização básica imediatamente ao carregar o DOM
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- SCRIPT DA IA (MÓDULO ISOLADO PARA NÃO QUEBRAR O RESTO) -->
+    <script type="module">
+        // Importação dinâmica com fallback para não travar o site se falhar
+        let GoogleGenAI;
+        try {
+            const module = await import("https://esm.run/@google/genai");
+            GoogleGenAI = module.GoogleGenAI;
+        } catch (e) {
+            console.warn("Modulo de IA não carregou. O site continuará funcionando sem chat.", e);
+        }
+
         let ai = null;
         let aiModel = "gemini-2.5-flash";
         
-        // SAFE INIT: Check if API key is available in the environment (bundled) or if users need to supply it
-        // On GitHub pages, 'process' does not exist, so we need to catch the error
-        try {
-            // Check if process is defined to avoid "ReferenceError" on static hosting
-            if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-                ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            }
-        } catch (e) {
-            console.warn("AI Environment Key not found. Chat will require manual key input or fail gracefully.");
-        }
+        // Tentativa de Inicializar IA com chave injetada, se existir. 
+        // Em GitHub pages puro, isso vai falhar silenciosamente e pedir a chave no chat.
+        // NENHUMA variável process.env é chamada aqui para evitar ReferenceError.
 
-        // Cria um resumo simplificado dos dados para a IA para economizar tokens e focar no conteúdo texto
+        // Contexto para IA
         const contextData = JSON.stringify(GUIDE_DATA, (key, value) => {
-            if (typeof value === 'function') return value().replace(/<[^>]*>/g, ''); // Remove tags HTML para a IA
+            if (typeof value === 'function') return value().replace(/<[^>]*>/g, '');
             return value;
         });
 
         const systemInstruction = `
             Você é um Sábio Mestre de Artes Marciais no universo de Where Winds Meet.
             Use EXCLUSIVAMENTE os seguintes dados para responder perguntas: ${contextData}.
-            
-            Regras Absolutas baseadas nos dados sagrados:
-            1. "Hybrid sets" (Sets híbridos) são RUINS. Desencoraje seu uso.
-            2. Não mande o jogador executar inimigos sem Qi imediatamente no PvE; mande causar dano antes.
-            3. "Umbra" não significa guarda-chuva, é o caminho da arma.
-            4. Se perguntarem sobre "o que fazer primeiro" ou "gastar jades", cite a seção Must Dos.
-            5. Se a informação não estiver no JSON, diga: "Este conhecimento não consta nos pergaminhos sagrados."
-            6. O autor original deste conhecimento é Syykrae.
-            
-            Responda com sabedoria e concisão.
+            Regras:
+            1. "Hybrid sets" são RUINS.
+            2. Não mande executar inimigos sem Qi imediatamente no PvE.
+            3. "Umbra" significa o caminho Bellstrike-Umbra.
+            4. Se não souber, diga "Este conhecimento não consta nos pergaminhos."
+            Autor: Syykrae.
         `;
 
+        // Funções Globais para UI
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             const isHidden = win.style.display === 'none' || win.style.display === '';
@@ -936,15 +941,40 @@
             const msgArea = document.getElementById('chat-messages');
             const text = input.value.trim();
             if (!text) return;
-            
-            // Check if AI is initialized
+
+            // Interface simples para pedir chave API se não existir
             if (!ai) {
-                 const warning = document.createElement('div');
-                 warning.className = 'message msg-ai';
-                 warning.textContent = "Erro: API Key não configurada no servidor (GitHub Pages). A IA está indisponível.";
-                 warning.style.color = '#ff6b6b';
-                 msgArea.appendChild(warning);
-                 return;
+                // Tenta inicializar com input do usuário se parecer uma chave
+                if (text.startsWith('AIza') || text.startsWith('key:')) {
+                    const key = text.replace('key:', '').trim();
+                    try {
+                        if (GoogleGenAI) {
+                            ai = new GoogleGenAI({ apiKey: key });
+                            const sysMsg = document.createElement('div');
+                            sysMsg.className = 'message msg-ai';
+                            sysMsg.textContent = "Chave recebida. O oráculo está ouvindo.";
+                            msgArea.appendChild(sysMsg);
+                            input.value = '';
+                            return;
+                        }
+                    } catch(e) { console.error(e); }
+                }
+
+                if (!ai) {
+                     const warning = document.createElement('div');
+                     warning.className = 'message msg-ai';
+                     warning.innerHTML = "O Oráculo precisa de uma oferenda (API Key).<br>Cole sua chave Google AI aqui (começa com AIza...).";
+                     warning.style.color = '#ff6b6b';
+                     msgArea.appendChild(warning);
+                     
+                     const userMsg = document.createElement('div');
+                     userMsg.className = 'message msg-user';
+                     userMsg.textContent = text;
+                     msgArea.appendChild(userMsg);
+                     
+                     input.value = '';
+                     return;
+                }
             }
 
             const userDiv = document.createElement('div');
@@ -967,22 +997,19 @@
                     contents: text,
                     config: {
                         systemInstruction: systemInstruction,
-                        temperature: 0.3, // Menor temperatura para ser mais fiel aos dados
+                        temperature: 0.3,
                     }
                 });
                 loadingDiv.innerHTML = response.text;
             } catch (error) {
                 console.error(error);
-                loadingDiv.textContent = "A conexão com o fluxo de Qi foi interrompida (Erro na API ou Quota).";
+                loadingDiv.textContent = "O fluxo de Qi foi interrompido (Erro na API). Verifique sua chave.";
             } finally {
                 input.disabled = false;
                 input.focus();
                 msgArea.scrollTop = msgArea.scrollHeight;
             }
         };
-
-        // Initialize content regardless of AI status
-        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
