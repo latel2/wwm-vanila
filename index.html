@@ -28,6 +28,7 @@
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
+            /* Updated to HTTPS to prevent mixed content errors */
             background-image: 
                 linear-gradient(rgba(2, 13, 8, 0.92), rgba(2, 13, 8, 0.96)),
                 url('https://www.transparenttextures.com/patterns/black-scales.png');
@@ -883,8 +884,20 @@
         content.style.transition = 'opacity 0.2s ease-in-out';
 
         // --- AI LOGIC (GEMINI) ---
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const model = "gemini-2.5-flash";
+        
+        let ai = null;
+        let aiModel = "gemini-2.5-flash";
+        
+        // SAFE INIT: Check if API key is available in the environment (bundled) or if users need to supply it
+        // On GitHub pages, 'process' does not exist, so we need to catch the error
+        try {
+            // Check if process is defined to avoid "ReferenceError" on static hosting
+            if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+                ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            }
+        } catch (e) {
+            console.warn("AI Environment Key not found. Chat will require manual key input or fail gracefully.");
+        }
 
         // Cria um resumo simplificado dos dados para a IA para economizar tokens e focar no conteúdo texto
         const contextData = JSON.stringify(GUIDE_DATA, (key, value) => {
@@ -923,6 +936,16 @@
             const msgArea = document.getElementById('chat-messages');
             const text = input.value.trim();
             if (!text) return;
+            
+            // Check if AI is initialized
+            if (!ai) {
+                 const warning = document.createElement('div');
+                 warning.className = 'message msg-ai';
+                 warning.textContent = "Erro: API Key não configurada no servidor (GitHub Pages). A IA está indisponível.";
+                 warning.style.color = '#ff6b6b';
+                 msgArea.appendChild(warning);
+                 return;
+            }
 
             const userDiv = document.createElement('div');
             userDiv.className = 'message msg-user';
@@ -940,7 +963,7 @@
 
             try {
                 const response = await ai.models.generateContent({
-                    model: model,
+                    model: aiModel,
                     contents: text,
                     config: {
                         systemInstruction: systemInstruction,
@@ -950,7 +973,7 @@
                 loadingDiv.innerHTML = response.text;
             } catch (error) {
                 console.error(error);
-                loadingDiv.textContent = "A conexão com o fluxo de Qi foi interrompida (Erro na API).";
+                loadingDiv.textContent = "A conexão com o fluxo de Qi foi interrompida (Erro na API ou Quota).";
             } finally {
                 input.disabled = false;
                 input.focus();
@@ -958,6 +981,7 @@
             }
         };
 
+        // Initialize content regardless of AI status
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
