@@ -1,10 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guia WWM - Compêndio do Viajante</title>
+    
+    <!-- CORREÇÃO CRÍTICA PARA GITHUB PAGES: Polyfill para 'process' -->
+    <script>
+        window.process = {
+            env: {
+                NODE_ENV: 'production'
+            }
+        };
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -858,6 +867,7 @@
         let currentTab = 'intro';
 
         function init() {
+            if (!nav || !content) return;
             nav.innerHTML = '';
             Object.keys(GUIDE_DATA).forEach(key => {
                 const btn = document.createElement('button');
@@ -868,7 +878,6 @@
                 nav.appendChild(btn);
             });
             loadTab(currentTab);
-            content.style.opacity = 1;
         }
 
         function loadTab(key) {
@@ -903,10 +912,6 @@
         let ai = null;
         let aiModel = "gemini-2.5-flash";
         
-        // Tentativa de Inicializar IA com chave injetada, se existir. 
-        // Em GitHub pages puro, isso vai falhar silenciosamente e pedir a chave no chat.
-        // NENHUMA variável process.env é chamada aqui para evitar ReferenceError.
-
         // Contexto para IA
         const contextData = JSON.stringify(GUIDE_DATA, (key, value) => {
             if (typeof value === 'function') return value().replace(/<[^>]*>/g, '');
