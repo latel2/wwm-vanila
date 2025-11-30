@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia WWM - Compêndio do Viajante</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020d08;
+            --panel-bg: rgba(9, 31, 20, 0.95);
+            --text-main: #e0e6e3;
+            --text-muted: #aab8b2;
+            --gold-primary: #c8aa6e;
+            --gold-dim: #8a7346;
+            --gold-bright: #ebd5a0;
+            --accent-red: #8b2e2e;
+            --border-style: 1px solid var(--gold-dim);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            background-image: 
+                linear-gradient(rgba(2, 13, 8, 0.92), rgba(2, 13, 8, 0.96)),
+                url('https://www.transparenttextures.com/patterns/black-scales.png');
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, .wuxia-font {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            border-bottom: 2px solid var(--gold-dim);
+            background: radial-gradient(circle at center, rgba(200, 170, 110, 0.1) 0%, transparent 80%);
+        }
+
+        header h1 {
+            color: var(--gold-primary);
+            font-size: 2.8rem;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(200, 170, 110, 0.3);
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            background: rgba(2, 13, 8, 0.98);
+            z-index: 100;
+            border-bottom: 1px solid #1a2e25;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--gold-primary);
+            padding: 10px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--gold-bright);
+            background: rgba(200, 170, 110, 0.1);
+            color: var(--gold-bright);
+        }
+
+        .nav-btn.active {
+            background: var(--gold-primary);
+            color: #020d08;
+            font-weight: bold;
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 15px rgba(200, 170, 110, 0.4);
+        }
+
+        /* --- Content --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            padding-bottom: 120px;
+            min-height: 60vh;
+        }
+
+        .section-title {
+            color: var(--gold-primary);
+            border-bottom: 1px solid var(--gold-dim);
+            padding-bottom: 15px;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--gold-dim);
+            padding: 25px;
+            position: relative;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold-bright);
+        }
+
+        .card h3 {
+            color: var(--gold-bright);
+            margin-top: 0;
+            border-bottom: 1px solid rgba(200, 170, 110, 0.2);
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .card h4 {
+            color: var(--gold-primary);
+            margin: 15px 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .sub-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Build Specific Styles */
+        .build-stats {
+            margin-top: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 2px solid var(--gold-dim);
+        }
+
+        .stat-priority {
+            color: #d1dcd6;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .stat-arrow { color: var(--gold-dim); margin: 0 5px; }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(200, 170, 110, 0.1);
+            border: 1px solid var(--gold-dim);
+            font-size: 0.75rem;
+            color: var(--gold-bright);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Timeline for Must Dos */
+        .timeline-step {
+            border-left: 2px solid var(--gold-dim);
+            padding-left: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-step::before {
+            content: '';
+            position: absolute;
+            left: -9px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-color);
+            border: 2px solid var(--gold-primary);
+            border-radius: 50%;
+        }
+
+        /* Tabela Personalizada */
+        .wuxia-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .wuxia-table th, .wuxia-table td {
+            border: 1px solid rgba(138, 115, 70, 0.3);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .wuxia-table th {
+            background-color: rgba(200, 170, 110, 0.1);
+            color: var(--gold-bright);
+            font-family: 'Cinzel', serif;
+        }
+
+        .wuxia-table tr:hover {
+            background-color: rgba(200, 170, 110, 0.05);
+        }
+
+        /* Flowchart Simulation */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .flow-step {
+            background: var(--panel-bg);
+            border: 1px solid var(--gold-dim);
+            padding: 15px 25px;
+            text-align: center;
+            margin: 10px;
+            min-width: 200px;
+            border-radius: 4px;
+        }
+        .arrow-down { color: var(--gold-dim); font-size: 1.5rem; margin: 5px 0; }
+
+        /* --- Chat Assistant --- */
+        #chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        #chat-toggle {
+            background: var(--gold-primary);
+            color: #020d08;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(200, 170, 110, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        #chat-toggle:hover {
+            transform: scale(1.1);
+            background: var(--gold-bright);
+        }
+
+        #chat-window {
+            display: none;
+            width: 360px;
+            height: 550px;
+            background: #0b1a12;
+            border: 1px solid var(--gold-primary);
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #chat-header {
+            background: var(--gold-dim);
+            color: #051a10;
+            padding: 15px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-image: url('https://www.transparenttextures.com/patterns/black-scales.png');
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            max-width: 85%;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .msg-user {
+            background: rgba(200, 170, 110, 0.2);
+            align-self: flex-end;
+            border: 1px solid var(--gold-dim);
+            color: var(--gold-bright);
+        }
+
+        .msg-ai {
+            background: rgba(0, 0, 0, 0.4);
+            align-self: flex-start;
+            border: 1px solid #2d4a3e;
+            color: #d1dcd6;
+        }
+
+        #chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #1a2e25;
+            display: flex;
+            gap: 10px;
+            background: #091f14;
+        }
+
+        #chat-input {
+            flex: 1;
+            background: #020d08;
+            border: 1px solid var(--gold-dim);
+            padding: 12px;
+            color: white;
+            border-radius: 2px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        #chat-input:focus { outline: 1px solid var(--gold-primary); }
+
+        #chat-send {
+            background: var(--gold-primary);
+            border: none;
+            color: #051a10;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            transition: background 0.2s;
+        }
+        #chat-send:hover { background: var(--gold-bright); }
+
+        .spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--gold-dim);
+            border-top: 2px solid var(--gold-bright);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .nav-btn { flex: 1 1 40%; font-size: 0.8rem; padding: 12px 5px; text-align: center; }
+            #chat-window { width: 90vw; right: -20px; bottom: 75px; }
+            .section-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Guia WWM</h1>
+        <p>Compêndio do Viajante • Estratégias & Segredos</p>
+    </header>
+
+    <nav id="navbar">
+        <!-- JS will populate tabs -->
+    </nav>
+
+    <main id="content">
+        <!-- JS will populate content -->
+    </main>
+
+    <!-- AI Widget -->
+    <div id="chat-widget">
+        <div id="chat-window">
+            <div id="chat-header">
+                <span>Oráculo Wuxia (IA)</span>
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="toggleChat()">×</span>
+            </div>
+            <div id="chat-messages">
+                <div class="message msg-ai">Saudações. Guardarei o conhecimento deste guia para auxiliá-lo. Pergunte sobre builds, locais ou estratégias.</div>
+            </div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ex: Qual a melhor build de espada?" onkeypress="handleKeyPress(event)">
+                <button id="chat-send" onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+        <button id="chat-toggle" onclick="toggleChat()" aria-label="Abrir Chat">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+        </button>
+    </div>
+
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+        const GUIDE_DATA = {
+            intro: {
+                title: "Início",
+                content: `
+                    <div style="text-align:center; padding: 20px;">
+                        <h2 class="wuxia-font" style="color:var(--gold-bright); margin-bottom: 20px;">Bem-vindo, Jovem Mestre</h2>
+                        <p style="max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: var(--text-muted);">
+                            Este guia foi forjado para garantir sua ascensão em <em>Where Winds Meet</em>. 
+                            Evite armadilhas comuns, otimize seu <em>Qi</em> e domine as artes marciais com as instruções detalhadas abaixo.
+                        </p>
+                        <p style="margin-top: 15px; font-size: 0.85rem; color: var(--gold-dim);">
+                            Conteúdo baseado no guia original de <strong>Syykrae</strong> (Jogador CN - Bellstrike Umbra Main).
+                        </p>
+                    </div>
+                    <div class="card-grid" style="margin-top:40px;">
+                        <div class="card">
+                            <h3><span style="color:var(--accent-red)">⚠</span> Aviso Crítico</h3>
+                            <p class="sub-text">Não gaste suas primeiras Jades no sistema de Gacha. Siga a aba <strong>"Obrigatórios"</strong> para não comprometer permanentemente sua conta ("brick account").</p>
+                        </div>
+                        <div class="card">
+                            <h3>🗺️ Exploração</h3>
+                            <p class="sub-text">Descubra localizações de NPCs vitais e ícones de mapa na aba <strong>"Dicas & Moedas"</strong>.</p>
+                        </div>
+                        <div class="card">
+                            <h3>⚔️ Combate</h3>
+                            <p class="sub-text">Estude as <strong>"Builds"</strong> para entender a prioridade de status e sinergia de habilidades místicas.</p>
+                        </div>
+                    </div>
+                `
+            },
+            mustDos: {
+                title: "Obrigatórios",
+                render: () => `
+                    <h2 class="section-title">O Caminho Essencial (Must Dos)</h2>
+                    
+                    <div style="background: rgba(139, 46, 46, 0.2); border: 1px solid var(--accent-red); padding: 20px; margin-bottom: 40px; border-radius: 4px; text-align: center;">
+                        <h3 style="color: #ff6b6b; margin-top:0;">IMPORTANTE: Gaste suas primeiras 7000 Jades AQUI</h3>
+                        <p>Não compre invocações (Gacha) antes de completar os passos abaixo.</p>
+                    </div>
+
+                    <div class="timeline-step">
+                        <span class="tag">Passo 1: A Compra da Técnica</span>
+                        <h3>Vá para Qinghe - Moonveil Mountain (51%)</h3>
+                        <p class="sub-text">Procure pelo mercador chamado <strong>Tang Bao</strong> (Weiyang Merchant).</p>
+                        <div class="build-stats" style="margin-top: 15px;">
+                            <p><strong>Item Alvo:</strong> <span style="color:var(--gold-bright)">Morale Chant: Page</span> (Página de Cântico Moral)</p>
+                            <p><strong>Custo:</strong> 500 Jades cada.</p>
+                            <p><strong>Ação:</strong> Compre todas as 10 páginas.</p>
+                            <p><strong>Total:</strong> <span style="color:var(--gold-primary)">5000 Jades</span>.</p>
+                            <p style="margin-top:10px; font-style:italic; font-size:0.9rem;">Efeito: Skill Interna usada para a maioria das artes marciais. Aumenta penetração de ataque, atk% e heal% ao atacar/curar (acumula até 5x).</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <span class="tag">Passo 2: Aprimoramento</span>
+                        <h3>Vá para Kaifeng</h3>
+                        <p class="sub-text">Encontre o mercador <strong>Tang Lun</strong> (Mesmo tipo de mercador de Qinghe).</p>
+                        <div class="build-stats" style="margin-top: 15px;">
+                            <p><strong>Item Alvo:</strong> <span style="color:var(--gold-bright)">Morale Chant: Notes</span></p>
+                            <p><strong>Custo:</strong> 200 Jades cada.</p>
+                            <p><strong>Ação:</strong> Compre 10 notas.</p>
+                            <p><strong>Total:</strong> <span style="color:var(--gold-primary)">2000 Jades</span>.</p>
+                            <p style="margin-top:10px; font-style:italic; font-size:0.9rem;">Uso: Utilizado para dar upgrade na skill interna comprada no Passo 1.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <span class="tag">Passo 3: Desbloqueio Nível 32</span>
+                        <h3>Reciclagem de Notas (Mind Method Exchange)</h3>
+                        <p class="sub-text">Ao atingir o nível 32, você desbloqueia a troca de métodos mentais.</p>
+                        <ul style="color:var(--text-muted); margin-top:10px; padding-left:20px;">
+                            <li>Tranque suas 4 principais "inner ways" (baseado nas suas artes marciais).</li>
+                            <li>Recicle o resto.</li>
+                            <li>Compre as caixas semanais (até 600 por semana) para notas aleatórias.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            builds: {
+                title: "Builds (Sets)",
+                render: () => `
+                    <h2 class="section-title">Manual de Builds e Equipamentos</h2>
+                    <p style="text-align:center; margin-bottom:30px; color:var(--text-muted);">Qualquer status não mencionado nas prioridades abaixo não é recomendado.</p>
+
+                    <div class="card" style="margin-bottom:30px; border:1px solid var(--accent-red);">
+                         <h3>Nota sobre Sets Híbridos</h3>
+                         <p><strong>São bons?</strong> Não.</p>
+                         <p class="sub-text">Eles ficam piores com o tempo. Se você não se importa com dano, use o que quiser, mas para conteúdo solo e eficiência, evite misturar sets.</p>
+                         <p class="sub-text"><em>Curiosidade: "Umbra" não significa guarda-chuva, significa o caminho "Bellstrike-Umbra".</em></p>
+                    </div>
+
+                    <div class="card-grid">
+                        <!-- Bellstrike Splendor -->
+                        <div class="card">
+                            <span class="tag">DPS Melee • Controle</span>
+                            <h3>Bellstrike - Splendor</h3>
+                            <p class="sub-text">Alta mobilidade e controle de alvo único. Ótimo para "kiting". Combine com skills carregadas para dano explosivo.</p>
+                            
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Nameless Sword (Espada Sem Nome) / Nameless Spear (Lança Sem Nome)</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Hawkwing / Jadeware <br>(Hawkwing = Dano estável, Jadeware = Melhor com ping baixo)</li>
+                                <li><strong>Armadura:</strong> 4 peças Formbend</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Damage)</h4>
+                                <p class="stat-priority">Sword Dmg Inc <span class="stat-arrow">></span> Dmg to Boss <span class="stat-arrow">></span> Max Attack <span class="stat-arrow">></span> Momentum <span class="stat-arrow">></span> Max Bellstrike Atk <span class="stat-arrow">></span> All Martial Arts Dmg</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Affinity Rate <span class="stat-arrow">></span> Crit Rate <span class="stat-arrow">></span> Precision Rate</p>
+                            </div>
+                        </div>
+
+                        <!-- Bellstrike Umbra -->
+                        <div class="card">
+                            <span class="tag">DPS Melee • Bleed</span>
+                            <h3>Bellstrike - Umbra</h3>
+                            <p class="sub-text">Aplica sangramento, disparando ticks de dano frequentes e sustentados.</p>
+
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Strategic Sword / Heavenquaker Spear</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Hawkwing</li>
+                                <li><strong>Armadura:</strong> 4 peças Eaglerise</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Damage)</h4>
+                                <p class="stat-priority">Sword Dmg Inc <span class="stat-arrow">></span> Dmg to Boss <span class="stat-arrow">></span> Max Attack <span class="stat-arrow">></span> Momentum <span class="stat-arrow">></span> Power <span class="stat-arrow">></span> Max Bellstrike Atk</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Affinity Rate <span class="stat-arrow">></span> Crit Rate <span class="stat-arrow">></span> Precision Rate</p>
+                            </div>
+                        </div>
+
+                        <!-- Stonesplit Might -->
+                        <div class="card">
+                            <span class="tag">Tank Melee • AoE</span>
+                            <h3>Stonesplit - Might</h3>
+                            <p class="sub-text">Escudos, redução de dano e resistência a interrupção. Esponja de dano com skills de provocação (taunt). Carrega skills para AoE.</p>
+
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Thundercry Blade / Stormbreaker Spear</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Rainwhisper</li>
+                                <li><strong>Armadura:</strong> 4 peças Formbend</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Damage)</h4>
+                                <p class="stat-priority">Mo Blade Dmg Inc <span class="stat-arrow">></span> Max Attack <span class="stat-arrow">></span> Power <span class="stat-arrow">></span> Max Stonesplit Dmg <span class="stat-arrow">=</span> Min Attack <span class="stat-arrow">></span> Agility</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Crit Rate <span class="stat-arrow">></span> Precision Rate</p>
+                            </div>
+                        </div>
+
+                        <!-- Silkbind Jade -->
+                        <div class="card">
+                            <span class="tag">DPS Ranged • Aéreo</span>
+                            <h3>Silkbind - Jade</h3>
+                            <p class="sub-text">Estilo de jogo à distância, capaz de DPS sustentado. Possui controle, permitindo combos explosivos com ataques aéreos.</p>
+
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Inkwell Fan / Vernal Umbrella</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Veil of the Willow</li>
+                                <li><strong>Armadura:</strong> 4 peças Beyond the Chill</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Damage)</h4>
+                                <p class="stat-priority">Umbrella Dmg Inc <span class="stat-arrow">></span> Dmg to Boss <span class="stat-arrow">></span> Agility <span class="stat-arrow">></span> All Martial Arts Dmg <span class="stat-arrow">=</span> Max Attack <span class="stat-arrow">></span> Power</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Crit Rate <span class="stat-arrow">></span> Precision Rate</p>
+                            </div>
+                        </div>
+
+                        <!-- Bamboocut Wind -->
+                        <div class="card">
+                            <span class="tag">DPS Melee • Mobilidade</span>
+                            <h3>Bamboocut - Wind</h3>
+                            <p class="sub-text">Ostenta extrema mobilidade e ataques consecutivos rápidos. Possui ferramentas de controle para manter um ambiente seguro para causar dano.</p>
+
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Infernal Twinblades / Mortal Rope Dart</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Swallowcall</li>
+                                <li><strong>Armadura:</strong> 4 peças Calmwaters</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Damage)</h4>
+                                <p class="stat-priority">Dmg to Boss <span class="stat-arrow">></span> Rope Dart Dmg <span class="stat-arrow">></span> All Martial Arts Dmg <span class="stat-arrow">></span> Max Attack <span class="stat-arrow">></span> Power <span class="stat-arrow">></span> Agility</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Crit Rate <span class="stat-arrow">></span> Precision Rate</p>
+                            </div>
+                        </div>
+
+                        <!-- Silkbind Deluge -->
+                        <div class="card">
+                            <span class="tag">Healer • Suporte</span>
+                            <h3>Silkbind - Deluge</h3>
+                            <p class="sub-text">Possui cura explosiva e sustentada, cobrindo alvo único e grupos. Habilidades de reviver permitem que aliados derrotados voltem à luta.</p>
+
+                            <h4>🗡️ Armas Recomendadas</h4>
+                            <p class="sub-text">Panacea Fan / Soulshade Umbrella</p>
+
+                            <h4>🛡️ Equipamentos (Sets)</h4>
+                            <ul style="font-size:0.9rem; padding-left:20px; color:var(--text-muted);">
+                                <li><strong>Arma:</strong> 4 peças Ivorybloom</li>
+                                <li><strong>Armadura:</strong> 4 peças Whirlsnow</li>
+                            </ul>
+
+                            <div class="build-stats">
+                                <h4>Prioridade de Status (Healing)</h4>
+                                <p class="stat-priority">Fan Healing Inc <span class="stat-arrow">></span> All Martial Arts Healing <span class="stat-arrow">></span> Max Attack <span class="stat-arrow">></span> Min Attack <span class="stat-arrow">></span> Agility <span class="stat-arrow">></span> Body & Defence</p>
+                                
+                                <h4 style="margin-top:10px;">Prioridade (%)</h4>
+                                <p class="stat-priority">Crit Rate APENAS (o mais alto possível)</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            skills: {
+                title: "Habilidades",
+                render: () => `
+                    <h2 class="section-title">Habilidades Místicas (Prioridade)</h2>
+                    <div style="overflow-x:auto;">
+                        <table class="wuxia-table">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="20%">Nome</th>
+                                    <th>Descrição e Uso</th>
+                                    <th>Sinergia / Notas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center; font-weight:bold; color:var(--gold-primary)">1</td>
+                                    <td><strong>Drunken Poet</strong><br><span style="font-size:0.8em; color:#888;">(Poeta Bêbado)</span></td>
+                                    <td>Dano alto. Imita a graça do imortal. Muito usado em PvP Late Game.</td>
+                                    <td>Sinergia: <strong>Dragon's Breath</strong> para mais dano.<br><a href="#" style="color:var(--gold-dim)">Vídeo de Exemplo</a></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:bold; color:var(--gold-primary)">2</td>
+                                    <td><strong>Dragon's Breath</strong><br><span style="font-size:0.8em; color:#888;">(Sopro do Dragão)</span></td>
+                                    <td>Usado em muitos combos, dano alto e aplica Burn (Queimadura) nos inimigos.</td>
+                                    <td>PvE e PvP.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:bold; color:var(--gold-primary)">3</td>
+                                    <td><strong>Soaring Spin</strong><br><span style="font-size:0.8em; color:#888;">(Giro Ascendente)</span></td>
+                                    <td>Usado em combos ou para fechar distâncias. Dano muito alto.</td>
+                                    <td>Skill mística mais versátil (PvE e PvP).</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:bold;">4</td>
+                                    <td>Thousand Wave Flute</td>
+                                    <td>Enorme AoE (Área) e auto-target nos inimigos. BGM customizável.</td>
+                                    <td>3ª Região, não disponível no início do jogo.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:bold;">5</td>
+                                    <td>Ghost Bind</td>
+                                    <td>Stuna múltiplos inimigos, usado para limpar conteúdo de mundo aberto. Não funciona em chefes.</td>
+                                    <td>Muito útil no early game, não necessário no late game.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card" style="margin-top:20px;">
+                        <h3>Nota Adicional</h3>
+                        <p>Recomenda-se equipar <strong>Cloud Steps</strong> pois fecha a distância nos inimigos muito rapidamente.</p>
+                    </div>
+                `
+            },
+            tips: {
+                title: "Dicas & Moedas",
+                render: () => `
+                    <h2 class="section-title">Segredos do Viajante</h2>
+                    <div class="card" style="margin-bottom: 30px; border-left: 4px solid var(--gold-primary);">
+                        <h3 style="color: #ebd5a0;">O Segredo do Macarrão (Chicken Noodles)</h3>
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:15px;">
+                            <div style="flex:1;">
+                                <p class="sub-text">Vá para a localização em Kaifeng, ao lado do menino do xadrez, você encontrará um NPC chamado <strong>Niu Mang</strong>. Moeda usada: Commerce Coins.</p>
+                                <p class="sub-text" style="margin-top:10px;">Fale com ele e compre seu prato assinatura (Wheat Rice) para desbloquear a comida caseira: <strong>Chicken Noodles</strong>.</p>
+                                <div class="build-stats" style="margin-top:15px;">
+                                    <p><strong>Efeito:</strong> +20% chance de drop de todos os recursos (Herbal Gathering Crit Rate +20%).</p>
+                                    <p><strong>Duração:</strong> 10 minutos (não acumulável).</p>
+                                    <p><strong>Dica:</strong> Os recursos renovam a cada 5 minutos no modo online, então você pode farmar infinitamente com o macarrão.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 30px;">
+                        <h3>Ícones do Mapa</h3>
+                        <p class="sub-text" style="margin-bottom:20px;">Legenda dos ícones importantes no mapa-múndi do jogo.</p>
+                        <div style="display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:20px;">
+                            <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; width:120px;">
+                                <div style="font-size:2.5rem;">🗿</div> 
+                                <p style="color:var(--gold-bright); margin-top:10px; font-weight:bold;">Fast Travel</p>
+                                <span style="font-size:0.75rem; color:#aaa;">Pontos de teletransporte</span>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; width:120px;">
+                                <div style="font-size:2.5rem;">📍</div> 
+                                <p style="color:var(--gold-bright); margin-top:10px; font-weight:bold;">Oddities NPC</p>
+                                <span style="font-size:0.75rem; color:#aaa;">Vendedor de curiosidades</span>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; width:120px;">
+                                <div style="font-size:2.5rem;">🔥</div> 
+                                <p style="color:var(--gold-bright); margin-top:10px; font-weight:bold;">Wayfarer</p>
+                                <span style="font-size:0.75rem; color:#aaa;">Desbloqueia o mapa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3>Economia (Moedas)</h3>
+                            <ul style="padding-left:20px; line-height:1.6; color:var(--text-muted); font-size:0.9rem;">
+                                <li><strong style="color:var(--text-main)">Echo Beads:</strong> Moeda Premium (Topup). Usada em gacha limitado premium e cosméticos.</li>
+                                <li><strong style="color:var(--text-main)">Echo Jades:</strong> Moeda Grátis (Exploração). Usada em gacha limitado de jade e banner padrão. Gaste as primeiras 7000 nos livros obrigatórios!</li>
+                                <li><strong style="color:var(--text-main)">Commerce Coins:</strong> 2500 obtidas semanalmente na Season Shop. Requer 20000 Jade Fish de coleção na semana. Usado para Chicken Noodles.</li>
+                                <li><strong style="color:var(--text-main)">Coins:</strong> Moeda universal para cada mapa.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>Dicas Gerais & Combate</h3>
+                            <ul style="padding-left:20px; line-height:1.6; color:var(--text-muted); font-size:0.9rem;">
+                                <li><strong>Execução de Inimigos (PvE):</strong> Não execute imediatamente quando eles ficarem sem Qi (stun). Eles não podem se mover, aproveite esse tempo para causar mais dano antes de finalizar.</li>
+                                <li><strong>Pó de Travesseiro:</strong> Não use até o nível máximo para farmar gears do nível mais alto. Gears de nível baixo são abandonados rapidamente.</li>
+                                <li><strong>PvP:</strong> Não é balanceado por nível/gear. Não jogue antes de atingir o nível e status recomendados.</li>
+                                <li><strong>Ursos:</strong> Não mate ursos! Use Taichi neles para quebrar pedras próximas e liberar baús.</li>
+                                <li><strong>Início:</strong> Nameless Sword e Healing Fan (seleção grátis no início) são suficientes para chegar ao nível máximo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            damage: {
+                title: "Cálculo de Dano",
+                render: () => `
+                    <h2 class="section-title">Fluxograma de Dano</h2>
+                    <p style="text-align:center; margin-bottom:30px; color:var(--text-muted);">Como o jogo decide qual número de dano mostrar.</p>
+                    
+                    <div class="flow-container">
+                        <div class="flow-step" style="background:var(--gold-dim); color:#000; font-weight:bold;">Ataque</div>
+                        <div class="arrow-down">↓</div>
+                        <div class="flow-step">Acerto de Precisão (Precision Hit)?</div>
+                        
+                        <div style="display:flex; justify-content:center; width:100%; gap: 50px; margin-top:10px;">
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <div class="arrow-down" style="font-size:1rem;">Sim ↙</div>
+                                <div class="flow-step" style="border-color:var(--gold-bright); max-width:250px;">
+                                    <strong>Checagem:</strong><br>
+                                    Se Crit rate + Affinity rate ≥ 100%<br>
+                                    <span style="font-size:0.8em; color:var(--gold-bright)">(Dano Normal não aparecerá)</span>
+                                </div>
+                                
+                                <div style="display:flex; gap:10px; margin-top:20px;">
+                                    <div class="card" style="padding:10px; background:rgba(200,100,0,0.2); border:1px solid orange;">
+                                        <strong style="color:orange">Afinidade (Laranja)</strong><br>
+                                        Max Attack x 135%
+                                    </div>
+                                    <div class="card" style="padding:10px; background:rgba(200,200,0,0.2); border:1px solid yellow;">
+                                        <strong style="color:yellow">Crítico (Amarelo)</strong><br>
+                                        Random (Min~Max) x 150%
+                                    </div>
+                                    <div class="card" style="padding:10px; background:rgba(255,255,255,0.1); border:1px solid white;">
+                                        <strong style="color:white">Normal (Branco)</strong><br>
+                                        Random (Min~Max)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <div class="arrow-down" style="font-size:1rem;">↘ Não</div>
+                                <div class="flow-step" style="border-color:#666; color:#999;">
+                                    <strong>Afinidade Hit?</strong>
+                                </div>
+                                <div style="display:flex; gap:20px; margin-top:10px;">
+                                    <div class="arrow-down" style="font-size:0.8rem;">Sim ↙</div>
+                                    <div class="arrow-down" style="font-size:0.8rem;">↘ Não</div>
+                                </div>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="card" style="padding:10px; border:1px solid orange;">
+                                        <strong style="color:orange">Dano Afinidade</strong>
+                                    </div>
+                                    <div class="card" style="padding:10px; border:1px solid gray; background:#333;">
+                                        <strong style="color:#ccc">Abrasão (Cinza)</strong><br>
+                                        Min Attack
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top:40px; width:100%; max-width:800px;">
+                            <h3>Nota sobre Porcentagens</h3>
+                            <p>Afinidade pode parecer legal, mas na realidade apenas caminhos <strong>Bellstrike</strong> a utilizam eficientemente.</p>
+                            <p>Se Affinity Rate é 40% e Crit Rate é 50%, isso significa que a taxa de Dano Normal é 10% (já que o total é 100%).</p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        const nav = document.getElementById('navbar');
+        const content = document.getElementById('content');
+        let currentTab = 'intro';
+
+        function init() {
+            Object.keys(GUIDE_DATA).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.textContent = GUIDE_DATA[key].title;
+                btn.onclick = () => loadTab(key);
+                btn.dataset.key = key;
+                nav.appendChild(btn);
+            });
+            loadTab(currentTab);
+        }
+
+        function loadTab(key) {
+            currentTab = key;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.key === key);
+            });
+            content.style.opacity = 0;
+            setTimeout(() => {
+                const data = GUIDE_DATA[key];
+                content.innerHTML = data.render ? data.render() : data.content;
+                content.style.opacity = 1;
+                window.scrollTo(0, 0);
+            }, 200);
+        }
+        
+        content.style.transition = 'opacity 0.2s ease-in-out';
+
+        // --- AI LOGIC (GEMINI) ---
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const model = "gemini-2.5-flash";
+
+        // Cria um resumo simplificado dos dados para a IA para economizar tokens e focar no conteúdo texto
+        const contextData = JSON.stringify(GUIDE_DATA, (key, value) => {
+            if (typeof value === 'function') return value().replace(/<[^>]*>/g, ''); // Remove tags HTML para a IA
+            return value;
+        });
+
+        const systemInstruction = `
+            Você é um Sábio Mestre de Artes Marciais no universo de Where Winds Meet.
+            Use EXCLUSIVAMENTE os seguintes dados para responder perguntas: ${contextData}.
+            
+            Regras Absolutas baseadas nos dados sagrados:
+            1. "Hybrid sets" (Sets híbridos) são RUINS. Desencoraje seu uso.
+            2. Não mande o jogador executar inimigos sem Qi imediatamente no PvE; mande causar dano antes.
+            3. "Umbra" não significa guarda-chuva, é o caminho da arma.
+            4. Se perguntarem sobre "o que fazer primeiro" ou "gastar jades", cite a seção Must Dos.
+            5. Se a informação não estiver no JSON, diga: "Este conhecimento não consta nos pergaminhos sagrados."
+            6. O autor original deste conhecimento é Syykrae.
+            
+            Responda com sabedoria e concisão.
+        `;
+
+        window.toggleChat = function() {
+            const win = document.getElementById('chat-window');
+            const isHidden = win.style.display === 'none' || win.style.display === '';
+            win.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) setTimeout(() => document.getElementById('chat-input').focus(), 100);
+        };
+
+        window.handleKeyPress = function(e) {
+            if (e.key === 'Enter') window.sendMessage();
+        };
+
+        window.sendMessage = async function() {
+            const input = document.getElementById('chat-input');
+            const msgArea = document.getElementById('chat-messages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message msg-user';
+            userDiv.textContent = text;
+            msgArea.appendChild(userDiv);
+            
+            input.value = '';
+            input.disabled = true;
+            msgArea.scrollTop = msgArea.scrollHeight;
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message msg-ai';
+            loadingDiv.innerHTML = '<div class="spinner"></div>';
+            msgArea.appendChild(loadingDiv);
+
+            try {
+                const response = await ai.models.generateContent({
+                    model: model,
+                    contents: text,
+                    config: {
+                        systemInstruction: systemInstruction,
+                        temperature: 0.3, // Menor temperatura para ser mais fiel aos dados
+                    }
+                });
+                loadingDiv.innerHTML = response.text;
+            } catch (error) {
+                console.error(error);
+                loadingDiv.textContent = "A conexão com o fluxo de Qi foi interrompida (Erro na API).";
+            } finally {
+                input.disabled = false;
+                input.focus();
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
